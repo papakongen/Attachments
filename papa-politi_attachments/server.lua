@@ -11,8 +11,6 @@ local Proxy = module("vrp", "lib/Proxy")
 vRP = Proxy.getInterface("vRP")
 vRPclient = Tunnel.getInterface("vRP","papapoliti:permission")
 
-
-
 RegisterNetEvent("papapoliti:permission")
 AddEventHandler("papapoliti:permission", function()
 	local user_id = vRP.getUserId({source})
