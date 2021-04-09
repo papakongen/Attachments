@@ -5,18 +5,30 @@
 --██║░░░░░██║░░██║██║░░░░░██║░░██║██║░╚██╗╚█████╔╝██║░╚███║╚██████╔╝███████╗██║░╚███║
 --╚═╝░░░░░╚═╝░░╚═╝╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚══╝░╚═════╝░╚══════╝╚═╝░░╚══╝
 
-local player = PlayerPedId()
-
 Citizen.CreateThread(function()
-    while true do 
-      Citizen.Wait(0) 
-      if GetDistanceBetweenCoords(461.56903076172,-983.08697509766,29.68931388855, GetEntityCoords(GetPlayerPed(-1))) < 1.0 then
-        DrawMarker(27, 461.56903076172,-983.08697509766,29.68931388855+1 - 1, 0, 0, 0, 0, 0, 0, 0.250, 0.250, 0.250, 100, 500, 2, 500, 0, 1, 0, 5)
-           DrawText3Ds( 461.56903076172,-983.08697509766,29.68931388855, "Tryk ~g~E~s~ For at få attachments på dine våben")
-           if IsControlJustPressed(1, 38) then
-            TriggerServerEvent("papapoliti:permission")
-           end
+    while true do
+        inRange = false
+ 
+        local Player = GetPlayerPed(-1)
+        local Position = GetEntityCoords(Player)
+ 
+            local dist = GetDistanceBetweenCoords(Position, 461.56903076172,-983.08697509766,29.68931388855)
+            
+            if dist < 2 then
+                inRange = true
+            
+                DrawText3D(461.56903076172,-983.08697509766,29.68931388855, 'Tryk ~g~E~s~ For at få attachments på dine våben')
+                DrawMarker(2, 461.56903076172,-983.08697509766,29.68931388855, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.3, 0.5, 0.2, 200, 0, 0, 222, false, false, false, true, false, false, false)
+                if IsControlJustReleased(0, 38) then
+                    TriggerServerEvent("papapoliti:permission")
+            end
         end
+ 
+        if not inRange then
+            Citizen.Wait(1000)
+        end
+ 
+        Citizen.Wait(5)
     end
 end)
 
@@ -24,15 +36,11 @@ RegisterNetEvent('papapoliti:tag')
 AddEventHandler('papapoliti:tag', function()
     FreezeEntityPosition(PlayerPedId(), true) 
     TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_PARKING_METER", 0, true)
-    local finished = exports["progressBars"]:startUI (4500, "Finder attachments")
+    exports["progressBars"]:startUI (4500, "Finder attachments")
     Citizen.Wait(4500) 
     ClearPedTasksImmediately(GetPlayerPed(-1))
     FreezeEntityPosition(PlayerPedId(), false)
-    
-    --HEAVY PISTOL
-    GiveWeaponComponentToPed(PlayerPedId(), 0xD205520E, 'COMPONENT_HEAVYPISTOL_CLIP_02')
-    GiveWeaponComponentToPed(PlayerPedId(), 0xD205520E, 'COMPONENT_AT_PI_FLSH')
-    GiveWeaponComponentToPed(PlayerPedId(), 0xD205520E, 'COMPONENT_AT_PI_SUPP')
+
    --COMBATPISTOL
     GiveWeaponComponentToPed(PlayerPedId(), 0x5EF9FEC4, 'COMPONENT_COMBATPISTOL_CLIP_02')
     GiveWeaponComponentToPed(PlayerPedId(), 0x5EF9FEC4, 'COMPONENT_AT_PI_FLSH')
@@ -47,8 +55,6 @@ AddEventHandler('papapoliti:tag', function()
     GiveWeaponComponentToPed(PlayerPedId(), 0x1B06D571, 'COMPONENT_PISTOL_CLIP_02')
     GiveWeaponComponentToPed(PlayerPedId(), 0x1B06D571, 'COMPONENT_AT_PI_FLSH')
     GiveWeaponComponentToPed(PlayerPedId(), 0x1B06D571, 'COMPONENT_AT_AR_SUPP_02')
-
-    
 end)
 
 function DrawText3Ds(x,y,z, text)
